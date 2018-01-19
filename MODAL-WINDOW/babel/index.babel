@@ -1,0 +1,50 @@
+// Crear elementos con atributos hijos
+const createCustomElement = (element,attributes,children) => {
+  let customElement = document.createElement(element);
+  if (children !== undefined) children.forEach(el => {
+    if (el.nodeType) {
+      if (el.nodeType === 1 || el.nodeType === 11) customElement.appendChild(el);
+    } else {
+      customElement.innerHTML += el;
+    }
+  });
+  addAttributes(customElement,attributes);
+  return customElement;
+};
+
+// Añadir un objeto de atributos a un elemento
+const addAttributes = (element, attrObj) => {
+  for (let attr in attrObj) {
+    if (attrObj.hasOwnProperty(attr)) element.setAttribute(attr,attrObj[attr])
+  }
+};
+
+// Imprimir Modal
+const printModal = content => {
+  // Crear contenedor interno
+  const modalContentEl = createCustomElement('div', {
+    id : 'ed-modal-content',
+    class : 'ed-modal-content'
+  }, [content]),
+        // Crear contenedor principal
+   modalContainerEl = createCustomElement('div', {
+    id : 'ed-modal-container',
+    class : 'ed-modal-container'
+  }, [modalContentEl]);
+  
+  // Imprimir Modal
+  document.body.appendChild(modalContainerEl);
+  
+  // Remover el modal
+  const removeModal = () => document.body.removeChild(modalContainerEl);
+  
+  modalContainerEl.addEventListener('click', e => {
+    if(e.target === modalContainerEl) removeModal();    
+  });
+}
+
+document.getElementById('show-modal').addEventListener('click', () => {
+  printModal(`<h1>Hola pinche mundo</h1>
+              <a href="#">Touch me Eddy</a>
+`);
+});
